@@ -7,12 +7,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{821A29DA-34E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{9EC328EF-C155-4835-B5D7-ED007DE2F680}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication", "Authentication\Authentication.csproj", "{22F98976-8550-46C8-AF00-DE9A2ECDAB53}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22F98976-8550-46C8-AF00-DE9A2ECDAB53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22F98976-8550-46C8-AF00-DE9A2ECDAB53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22F98976-8550-46C8-AF00-DE9A2ECDAB53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22F98976-8550-46C8-AF00-DE9A2ECDAB53}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9EC328EF-C155-4835-B5D7-ED007DE2F680} = {821A29DA-34E0-4C0E-99F4-6E3D500D14BE}
+		{22F98976-8550-46C8-AF00-DE9A2ECDAB53} = {9EC328EF-C155-4835-B5D7-ED007DE2F680}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1DB150C6-2C2D-4E81-A1BD-669D32D639CF}
