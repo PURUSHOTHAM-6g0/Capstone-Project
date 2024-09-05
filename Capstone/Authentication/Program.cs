@@ -1,3 +1,6 @@
+using Authentication.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace Authentication
 {
     public class Program
@@ -7,6 +10,7 @@ namespace Authentication
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddDbContext<AuthenticationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AuthenticationDBString")));
 
             builder.Services.AddControllers();
 
