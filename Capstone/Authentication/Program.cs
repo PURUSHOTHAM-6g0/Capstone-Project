@@ -1,5 +1,7 @@
+using Authentication.Contracts;
 using Authentication.Data;
 using Authentication.Models;
+using Authentication.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +46,7 @@ namespace Authentication
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTAuth:SecretKey"]))
                 };
             });
+            builder.Services.AddScoped<IAuthentication, AuthenticationRepository>();
 
             var app = builder.Build();
 

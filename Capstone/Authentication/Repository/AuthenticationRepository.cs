@@ -27,9 +27,8 @@ namespace Authentication.Repository
         public async Task<Response> AdminRegister(Register model)
         {
             var userExists = await _userManager.FindByIdAsync(model.EmployeeId);
-            var emailExists=await _userManager.FindByEmailAsync(model.Email);
             string timeZone = await GetTimeZoneFromCountry(model.Country);
-            if (userExists != null || emailExists!=null)
+            if (userExists != null)
                 return new Response { Status = "Error", Message = "User already exists!" };
             Register user = new()
             {
@@ -37,7 +36,6 @@ namespace Authentication.Repository
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.UserName,
-                Name = model.Name,
                 Country = model.Country,
                 TimeZone = timeZone
             };
@@ -61,7 +59,7 @@ namespace Authentication.Repository
 
         public async Task<object> CheckLoginCred(Login model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByNameAsync(model.UserName);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
@@ -84,25 +82,11 @@ namespace Authentication.Repository
             return null;
         }
 
-        public async Task<GetEmployeeDto> GetEmployeeById(string id)
-        {
-            var getEmployee = await _userManager.FindByIdAsync(id);
-            GetEmployeeDto employee = new GetEmployeeDto()
-            {
-                Email = getEmployee.Email,
-                EmployeeId = getEmployee.EmployeeId,
-                Name = getEmployee.Name,
-                TimeZone = getEmployee.TimeZone
-            };
-            return employee;
-        }
-
         public async Task<Response> UserRegister(Register model)
         {
             var userExists = await _userManager.FindByIdAsync(model.EmployeeId);
-            var emailExists = await _userManager.FindByEmailAsync(model.Email);
             string timeZone = await GetTimeZoneFromCountry(model.Country);
-            if (userExists != null || emailExists != null)
+            if (userExists != null)
                 return new Response { Status = "Error", Message = "User already exists!" };
             Register user = new()
             {
@@ -110,7 +94,6 @@ namespace Authentication.Repository
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.UserName,
-                Name = model.Name,
                 Country = model.Country,
                 TimeZone = timeZone
             };
@@ -121,6 +104,7 @@ namespace Authentication.Repository
             }
             return new Response { Status = "Success", Message = "User created successfully!" };
         }
+
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTAuth:SecretKey"]));
@@ -135,7 +119,7 @@ namespace Authentication.Repository
 
         private async Task<string> GetTimeZoneFromCountry(string isoCountryCode)
         {
-            string apiKey = "7Q2Q2081QMOO";
+            string apiKey = "7Q2Q2081QMOO"; // Replace with your actual TimeZoneDB API key
             using (var httpClient = new HttpClient())
             {
                 string apiUrl = $"https://api.timezonedb.com/v2.1/list-time-zone?key={apiKey}&format=json&country={isoCountryCode}";
@@ -151,6 +135,20 @@ namespace Authentication.Repository
                 }
             }
             return null;
+        }
+
+        public async Task<GetEmployeeDto> GetEmployeeById(string id)
+        {
+            var getEmployee = await _userManager.FindByIdAsync(id);
+            GetEmployeeDto employee = new GetEmployeeDto()
+            {
+                UserName = getEmployee.UserName,
+                Email = getEmployee.Email,
+                EmployeeId = getEmployee.EmployeeId,
+                TimeZone = getEmployee.TimeZone,
+            };
+            return employee;
+
         }
 
     }
