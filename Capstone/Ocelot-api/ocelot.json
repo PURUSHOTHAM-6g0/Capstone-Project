@@ -1,0 +1,51 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:3000"
+  },
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/Register",
+      "UpstreamHttpMethod": [
+        "Post"
+      ],
+      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/api/Authentication/register",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5275
+
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/Register/Admin",
+      "UpstreamHttpMethod": [
+        "Post"
+      ],
+      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/api/Authentication/register-admin",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5275
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/Login",
+      "UpstreamHttpMethod": [
+        "Post"
+      ],
+      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/api/Authentication/login",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5275
+
+        }
+      ]
+    }
+  ]
+}

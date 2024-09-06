@@ -119,7 +119,7 @@ namespace Authentication.Repository
 
         public async Task<string> GetTimeZoneFromCountry(string isoCountryCode)
         {
-            string apiKey = "7Q2Q2081QMOO"; // Replace with your actual TimeZoneDB API key
+            string apiKey = "7Q2Q2081QMOO"; 
             using (var httpClient = new HttpClient())
             {
                 string apiUrl = $"https://api.timezonedb.com/v2.1/list-time-zone?key={apiKey}&format=json&country={isoCountryCode}";
