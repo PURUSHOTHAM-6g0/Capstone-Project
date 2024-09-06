@@ -48,10 +48,10 @@ namespace Authentication.Controllers
             return Ok(userExists);
 
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetEmployeeById(string id)
+        [HttpGet("{Name}")]
+        public async Task<IActionResult> GetEmployeeByName(string Name)
         {
-            var getEmployee=await _authentication.GetEmployeeById(id);
+            var getEmployee=await _authentication.GetEmployeeByName(Name);
             if(getEmployee==null) return BadRequest();
             return Ok(getEmployee);
         }

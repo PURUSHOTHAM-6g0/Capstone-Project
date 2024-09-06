@@ -11,6 +11,7 @@ namespace Authentication.Contracts
 
         public Task<Response> AdminRegister(Register model);
 
-        public Task<GetEmployeeDto> GetEmployeeById(string id);
+        public Task<GetEmployeeDto> GetEmployeeByName(string Name);
+        public  Task<string> GetTimeZoneFromCountry(string isoCountryCode);
     }
 }

@@ -117,7 +117,7 @@ namespace Authentication.Repository
             return token;
         }
 
-        private async Task<string> GetTimeZoneFromCountry(string isoCountryCode)
+        public async Task<string> GetTimeZoneFromCountry(string isoCountryCode)
         {
             string apiKey = "7Q2Q2081QMOO"; // Replace with your actual TimeZoneDB API key
             using (var httpClient = new HttpClient())
@@ -137,9 +137,9 @@ namespace Authentication.Repository
             return null;
         }
 
-        public async Task<GetEmployeeDto> GetEmployeeById(string id)
+        public async Task<GetEmployeeDto> GetEmployeeByName(string Name)
         {
-            var getEmployee = await _userManager.FindByIdAsync(id);
+            var getEmployee = await _userManager.FindByNameAsync(Name);
             GetEmployeeDto employee = new GetEmployeeDto()
             {
                 UserName = getEmployee.UserName,
