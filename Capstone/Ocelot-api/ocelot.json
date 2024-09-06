@@ -1,6 +1,6 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:3000"
+    "BaseUrl": "http://localhost:3000"
   },
   "Routes": [
     {
@@ -8,7 +8,7 @@
       "UpstreamHttpMethod": [
         "Post"
       ],
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/Authentication/register",
       "DownstreamHostAndPorts": [
         {
@@ -23,7 +23,7 @@
       "UpstreamHttpMethod": [
         "Post"
       ],
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/Authentication/register-admin",
       "DownstreamHostAndPorts": [
         {
@@ -37,7 +37,7 @@
       "UpstreamHttpMethod": [
         "Post"
       ],
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/Authentication/login",
       "DownstreamHostAndPorts": [
         {
