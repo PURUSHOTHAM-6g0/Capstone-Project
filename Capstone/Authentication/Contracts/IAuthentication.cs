@@ -13,5 +13,8 @@ namespace Authentication.Contracts
 
         public Task<GetEmployeeDto> GetEmployeeByName(string Name);
         public  Task<string> GetTimeZoneFromCountry(string isoCountryCode);
+
+        public Task<IEnumerable<GetEmployeeDto>> GetAllEmployees();
+        public Task<GetEmployeeDto> GetEmployeeById(string employeeId);
     }
 }

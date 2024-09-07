@@ -1,5 +1,6 @@
 ﻿using Authentication.Contracts;
 using Authentication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,13 +49,22 @@ namespace Authentication.Controllers
             return Ok(userExists);
 
         }
-        [HttpGet("{Name}")]
-        public async Task<IActionResult> GetEmployeeByName(string Name)
+        [Authorize(Roles = "Manager")]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetEmployeeByName(string id)
         {
-            var getEmployee=await _authentication.GetEmployeeByName(Name);
+            var getEmployee=await _authentication.GetEmployeeById(id);
             if(getEmployee==null) return BadRequest();
             return Ok(getEmployee);
         }
+        [Authorize(Roles="Manager")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllEmployees()
+        {
+            var getAll=await _authentication.GetAllEmployees();
+            return Ok(getAll);
+        }
+
     }
 }
 
