@@ -69,6 +69,10 @@
       "UpstreamHttpMethod": [
         "Get"
       ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
       "DownstreamScheme": "http",
       "DownstreamPathTemplate": "/api/Authentication/{id}",
       "DownstreamHostAndPorts": [
