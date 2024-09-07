@@ -2,6 +2,7 @@
 using Authentication.Dto;
 using Authentication.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -76,7 +77,8 @@ namespace Authentication.Repository
                 return new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
+                    expiration = token.ValidTo,
+                    roles=userRoles
                 };
             }
             return null;
@@ -151,5 +153,36 @@ namespace Authentication.Repository
 
         }
 
+        public async Task<IEnumerable<GetEmployeeDto>> GetAllEmployees()
+        {
+            List<GetEmployeeDto> getEmployeeDtos = new List<GetEmployeeDto>();
+            foreach (var item in _userManager.Users)
+            {
+                GetEmployeeDto employeeDto = new GetEmployeeDto()
+                {
+                    Email=item.Email,
+                    EmployeeId=item.EmployeeId,
+                    TimeZone = item.TimeZone,
+                    UserName=item.UserName
+                };
+                getEmployeeDtos.Add(employeeDto);
+            }
+            return getEmployeeDtos;
+        }
+
+        public async Task<GetEmployeeDto> GetEmployeeById(string employeeId)
+        {
+            var getEmployee = await _userManager.Users
+                        .FirstOrDefaultAsync(u => u.EmployeeId == employeeId);
+
+            GetEmployeeDto employee = new GetEmployeeDto()
+            {
+                UserName = getEmployee.UserName,
+                Email = getEmployee.Email,
+                EmployeeId = getEmployee.EmployeeId,
+                TimeZone = getEmployee.TimeZone,
+            };
+            return employee;
+        }
     }
 }

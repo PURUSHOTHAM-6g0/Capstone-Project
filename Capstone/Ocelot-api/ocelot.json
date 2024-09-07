@@ -46,6 +46,38 @@
 
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/Employees",
+      "UpstreamHttpMethod": [ "Get" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/Authentication",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5275
+
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/{id}",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/Authentication/{id}",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5275
+
+        }
+      ]
     }
   ]
 }
