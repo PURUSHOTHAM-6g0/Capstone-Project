@@ -35,7 +35,7 @@ namespace TaskManagement.ProjectsMangement.Commands.AddProject
             var claimsPrincipal = _contextAccessor.HttpContext.User;
             var employeeId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var employeeName = claimsPrincipal.FindFirst(ClaimTypes.Name)?.Value;
-            var employeeTimeZone = claimsPrincipal.FindFirst(ClaimTypes.Country)?.Value; // Adjust claim type if needed
+            var employeeTimeZone = claimsPrincipal.FindFirst(ClaimTypes.Country)?.Value; 
 
             if (string.IsNullOrEmpty(employeeId) || string.IsNullOrEmpty(employeeName) || string.IsNullOrEmpty(employeeTimeZone))
             {
@@ -66,7 +66,7 @@ namespace TaskManagement.ProjectsMangement.Commands.AddProject
                 {
                     ProjectDescription = request.ProjectDescription,
                     ProjectName = request.ProjectName,
-                    EmployeeId = employeeId // Set EmployeeId if necessary
+                    EmployeeId = employeeId 
                 };
                 _context.Projects.Add(project);
                 await _context.SaveChangesAsync(cancellationToken);
