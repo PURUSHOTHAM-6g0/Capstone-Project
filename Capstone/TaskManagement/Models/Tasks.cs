@@ -15,9 +15,10 @@ namespace TaskManagement.Models
         public DateTime DueDate { get; set; }
         public enum TaskStatus
         {
-            Todo,
-            InProgress,
-            Completed
+            Todo=0,
+            InProgress=1,
+            Completed=2
+
         }
     }
 }
