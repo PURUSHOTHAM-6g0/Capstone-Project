@@ -68,6 +68,8 @@ namespace Authentication.Repository
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    new Claim(ClaimTypes.NameIdentifier,user.TimeZone)
                 };
                 foreach (var userRole in userRoles)
                 {
