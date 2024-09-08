@@ -32,16 +32,34 @@ namespace TaskManagement.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProjectDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    EmployeeId = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Projects", x => x.ProjectId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmployeeProjects",
+                columns: table => new
+                {
+                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProjectId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeProjects", x => new { x.EmployeeId, x.ProjectId });
                     table.ForeignKey(
-                        name: "FK_Projects_Employees_EmployeeId",
+                        name: "FK_EmployeeProjects_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "EmployeeId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EmployeeProjects_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "ProjectId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -55,8 +73,7 @@ namespace TaskManagement.Migrations
                     TaskDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
-                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AssignedDateUtc = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,9 +87,9 @@ namespace TaskManagement.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_EmployeeId",
-                table: "Projects",
-                column: "EmployeeId");
+                name: "IX_EmployeeProjects_ProjectId",
+                table: "EmployeeProjects",
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_ProjectId",
@@ -84,13 +101,16 @@ namespace TaskManagement.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "EmployeeProjects");
+
+            migrationBuilder.DropTable(
                 name: "Tasks");
 
             migrationBuilder.DropTable(
-                name: "Projects");
+                name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "Projects");
         }
     }
 }

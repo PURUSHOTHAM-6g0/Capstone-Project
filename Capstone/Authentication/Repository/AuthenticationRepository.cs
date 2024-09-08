@@ -69,7 +69,7 @@ namespace Authentication.Repository
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
-                    new Claim(ClaimTypes.NameIdentifier,user.TimeZone)
+                    new Claim(ClaimTypes.Country,user.TimeZone)
                 };
                 foreach (var userRole in userRoles)
                 {
@@ -105,6 +105,12 @@ namespace Authentication.Repository
             if (!result.Succeeded)
             {
                 return new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." };
+            }
+            if (!await _roleManager.RoleExistsAsync(Roles.User))
+                await _roleManager.CreateAsync(new IdentityRole(Roles.User));
+            if (await _roleManager.RoleExistsAsync(Roles.User))
+            {
+                await _userManager.AddToRoleAsync(user, Roles.User);
             }
             return new Response { Status = "Success", Message = "User created successfully!" };
         }

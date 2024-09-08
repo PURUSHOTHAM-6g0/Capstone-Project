@@ -1,6 +1,6 @@
 ﻿using Mapster;
 using MediatR;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TaskManagement.Data;
@@ -8,15 +8,17 @@ using TaskManagement.Models;
 
 namespace TaskManagement.ProjectsMangement.Commands.AddProject
 {
-    public class AddProjectCommand:IRequest<AddProjectResponse>
+    public class AddProjectCommand : IRequest<AddProjectResponse>
     {
         public string ProjectName { get; set; }
         public string ProjectDescription { get; set; }
     }
+
     public class AddProjectResponse
     {
         public int ProjectId { get; set; }
     }
+
     public class AddProjectHandler : IRequestHandler<AddProjectCommand, AddProjectResponse>
     {
         private readonly TaskDbcontext _context;
@@ -30,26 +32,21 @@ namespace TaskManagement.ProjectsMangement.Commands.AddProject
 
         public async Task<AddProjectResponse> Handle(AddProjectCommand request, CancellationToken cancellationToken)
         {
-            
-            var claimIdentity = _contextAccessor.HttpContext.User.Identity as ClaimsIdentity;
-            var employeeIdClaims = claimIdentity?.FindFirst(ClaimTypes.NameIdentifier);
-            var employeeNameClaims = claimIdentity?.FindFirst(ClaimTypes.Name);
-            var employeeTimezone = claimIdentity?.FindFirst(ClaimTypes.NameIdentifier);
+            var claimsPrincipal = _contextAccessor.HttpContext.User;
+            var employeeId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var employeeName = claimsPrincipal.FindFirst(ClaimTypes.Name)?.Value;
+            var employeeTimeZone = claimsPrincipal.FindFirst(ClaimTypes.Country)?.Value; // Adjust claim type if needed
 
-            if (employeeIdClaims == null || employeeNameClaims == null || employeeTimezone == null)
+            if (string.IsNullOrEmpty(employeeId) || string.IsNullOrEmpty(employeeName) || string.IsNullOrEmpty(employeeTimeZone))
             {
                 throw new UnauthorizedAccessException("Employee ID, Name, or TimeZone is missing in the token");
             }
 
-            string employeeId = employeeIdClaims.Value;
-            string employeeName = employeeNameClaims.Value;
-            string employeeTimeZone = employeeTimezone.Value;
-
-          
+            // Ensure Employee exists or add it
             var employee = await _context.Employees.FindAsync(employeeId);
             if (employee == null)
             {
-                employee = new Models.Employee
+                employee = new Employee
                 {
                     EmployeeId = employeeId,
                     EmployeeName = employeeName,
@@ -59,42 +56,37 @@ namespace TaskManagement.ProjectsMangement.Commands.AddProject
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
-           
+            // Check if the project already exists
             var project = await _context.Projects
-                .FirstOrDefaultAsync(p => p.ProjectName == request.ProjectName, cancellationToken);
+    .FirstOrDefaultAsync(p => p.ProjectName == request.ProjectName, cancellationToken);
 
             if (project == null)
             {
-               
                 project = new Project
                 {
                     ProjectDescription = request.ProjectDescription,
                     ProjectName = request.ProjectName,
+                    EmployeeId = employeeId // Set EmployeeId if necessary
                 };
-                await _context.AddAsync(project, cancellationToken);
+                _context.Projects.Add(project);
+                await _context.SaveChangesAsync(cancellationToken);
             }
 
-            
             var employeeProject = await _context.EmployeeProjects
                 .FirstOrDefaultAsync(ep => ep.EmployeeId == employeeId && ep.ProjectId == project.ProjectId, cancellationToken);
 
             if (employeeProject == null)
             {
-                
                 employeeProject = new EmployeeProject
                 {
                     EmployeeId = employeeId,
                     ProjectId = project.ProjectId,
                 };
-                await _context.EmployeeProjects.AddAsync(employeeProject, cancellationToken);
+                _context.EmployeeProjects.Add(employeeProject);
+                await _context.SaveChangesAsync(cancellationToken);
             }
-
-            
-            await _context.SaveChangesAsync(cancellationToken);
 
             return new AddProjectResponse { ProjectId = project.ProjectId };
         }
     }
-
-
 }

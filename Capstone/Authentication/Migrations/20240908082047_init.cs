@@ -30,7 +30,6 @@ namespace Authentication.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EmployeeId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TimeZone = table.Column<string>(type: "nvarchar(max)", nullable: false),
