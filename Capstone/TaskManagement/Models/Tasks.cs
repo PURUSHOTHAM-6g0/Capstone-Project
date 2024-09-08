@@ -13,20 +13,6 @@ namespace TaskManagement.Models
         public int ProjectId { get; set; }
         public Project Project { get; set; }
         public DateTime DueDate { get; set; }
-
-        public DateTime AssignedDateUtc { get; set; }
-        public DateTime AssignedDateInTimeZone
-        {
-            get
-            {
-                if (Project?.Employee?.TimeZone != null)
-                {
-                    TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById(Project.Employee.TimeZone);
-                    return TimeZoneInfo.ConvertTimeFromUtc(AssignedDateUtc, timeZone);
-                }
-                return AssignedDateUtc;
-            }
-        }
         public enum TaskStatus
         {
             Todo,

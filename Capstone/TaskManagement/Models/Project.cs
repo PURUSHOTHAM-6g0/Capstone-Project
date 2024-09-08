@@ -10,7 +10,7 @@ namespace TaskManagement.Models
         public string ProjectDescription { get; set; }
 
         public string EmployeeId {  get; set; }
-        public Employee Employee { get; set; }
+        public ICollection<EmployeeProject> EmployeeProjects { get; set; }
         public ICollection<Tasks> Tasks { get; set; }
     }
 }
