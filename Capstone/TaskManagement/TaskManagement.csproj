@@ -32,7 +32,6 @@
 
   <ItemGroup>
     <Folder Include="EmployeeMangement\Commands\" />
-    <Folder Include="EmployeeMangement\Queries\" />
   </ItemGroup>
 
 </Project>
