@@ -28,6 +28,16 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCarter();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("EnableCors", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // Angular app URL
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials(); // If you are using authentication with cookies or JWT
+    });
+});
 builder.Services.AddMediatR(c =>
 {
     c.RegisterServicesFromAssembly(typeof(Program).Assembly);
@@ -47,8 +57,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseAuthorization();
+app.UseCors("EnableCors"); 
+app.UseAuthentication();   
+app.UseAuthorization();    
 
 app.MapControllers();
 app.MapCarter();
