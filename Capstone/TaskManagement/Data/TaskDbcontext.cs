@@ -3,12 +3,12 @@ using TaskManagement.Models;
 
 namespace TaskManagement.Data
 {
-    public class TaskDbcontext:DbContext
+    public class TaskDbcontext : DbContext
     {
         public TaskDbcontext(DbContextOptions<TaskDbcontext> options) : base(options)
         {
-            
         }
+
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Tasks> Tasks { get; set; }
@@ -36,6 +36,13 @@ namespace TaskManagement.Data
                 .WithOne(ep => ep.Project)
                 .HasForeignKey(ep => ep.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Change the relationship for Task to avoid cascade paths
+            modelBuilder.Entity<EmployeeProject>()
+                .HasOne(ep => ep.Task)
+                .WithMany()
+                .HasForeignKey(ep => ep.TaskId)
+                .OnDelete(DeleteBehavior.NoAction);  // Use NO ACTION to prevent cascading delete
 
             // Composite key for EmployeeProject
             modelBuilder.Entity<EmployeeProject>()

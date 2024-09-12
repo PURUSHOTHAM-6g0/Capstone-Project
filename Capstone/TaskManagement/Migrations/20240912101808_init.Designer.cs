@@ -12,8 +12,8 @@ using TaskManagement.Data;
 namespace TaskManagement.Migrations
 {
     [DbContext(typeof(TaskDbcontext))]
-    [Migration("20240908082129_initial")]
-    partial class initial
+    [Migration("20240912101808_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,9 +51,14 @@ namespace TaskManagement.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TaskId")
+                        .HasColumnType("int");
+
                     b.HasKey("EmployeeId", "ProjectId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("TaskId");
 
                     b.ToTable("EmployeeProjects");
                 });
@@ -91,8 +96,16 @@ namespace TaskManagement.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskId"));
 
+                    b.Property<string>("AssignedTo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("EmployeeId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
@@ -109,6 +122,8 @@ namespace TaskManagement.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TaskId");
+
+                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("ProjectId");
 
@@ -129,18 +144,33 @@ namespace TaskManagement.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TaskManagement.Models.Tasks", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.Navigation("Employee");
 
                     b.Navigation("Project");
+
+                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("TaskManagement.Models.Tasks", b =>
                 {
+                    b.HasOne("TaskManagement.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TaskManagement.Models.Project", "Project")
                         .WithMany("Tasks")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Employee");
 
                     b.Navigation("Project");
                 });

@@ -35,7 +35,7 @@ namespace TaskManagement.ProjectsMangement.Commands.AddProject
             var claimsPrincipal = _contextAccessor.HttpContext.User;
             var employeeId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var employeeName = claimsPrincipal.FindFirst(ClaimTypes.Name)?.Value;
-            var employeeTimeZone = claimsPrincipal.FindFirst(ClaimTypes.Country)?.Value; 
+            var employeeTimeZone = claimsPrincipal.FindFirst(ClaimTypes.Country)?.Value;
 
             if (string.IsNullOrEmpty(employeeId) || string.IsNullOrEmpty(employeeName) || string.IsNullOrEmpty(employeeTimeZone))
             {
@@ -58,7 +58,7 @@ namespace TaskManagement.ProjectsMangement.Commands.AddProject
 
             // Check if the project already exists
             var project = await _context.Projects
-    .FirstOrDefaultAsync(p => p.ProjectName == request.ProjectName, cancellationToken);
+                .FirstOrDefaultAsync(p => p.ProjectName == request.ProjectName, cancellationToken);
 
             if (project == null)
             {
@@ -66,12 +66,13 @@ namespace TaskManagement.ProjectsMangement.Commands.AddProject
                 {
                     ProjectDescription = request.ProjectDescription,
                     ProjectName = request.ProjectName,
-                    EmployeeId = employeeId 
+                    EmployeeId = employeeId
                 };
                 _context.Projects.Add(project);
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
+            // Associate Employee with the Project
             var employeeProject = await _context.EmployeeProjects
                 .FirstOrDefaultAsync(ep => ep.EmployeeId == employeeId && ep.ProjectId == project.ProjectId, cancellationToken);
 
@@ -89,4 +90,5 @@ namespace TaskManagement.ProjectsMangement.Commands.AddProject
             return new AddProjectResponse { ProjectId = project.ProjectId };
         }
     }
+
 }

@@ -61,7 +61,10 @@ namespace TaskManagement.TaskManagements.Commands.AddTaskForProject
                 TaskDescription = request.TaskDescription,
                 ProjectId = request.ProjectId,
                 DueDate = taskDueDateInUtc,
-                Status = Tasks.TaskStatus.Todo 
+                Status = Tasks.TaskStatus.Todo,
+                EmployeeId=employeeId,
+                AssignedTo=employeeId
+                
             };
 
             _context.Tasks.Add(task);

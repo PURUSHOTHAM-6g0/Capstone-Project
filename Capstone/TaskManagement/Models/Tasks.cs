@@ -8,8 +8,10 @@ namespace TaskManagement.Models
         public int TaskId { get; set; }
         public string TaskName { get; set; }
         public string TaskDescription {  get; set; }
-
         public TaskStatus Status { get; set; }
+        public string AssignedTo { get; set; }
+        public string EmployeeId {  get; set; }
+        public Employee Employee { get; set; }
         public int ProjectId { get; set; }
         public Project Project { get; set; }
         public DateTime DueDate { get; set; }
