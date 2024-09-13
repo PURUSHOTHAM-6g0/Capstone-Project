@@ -22,6 +22,7 @@ namespace TaskManagement.EmployeeMangement.Queries.GetAllTasksOfAnEmployee
         public string TaskName { get; set; }
         public string TaskDescription { get; set; }
         public string Status { get; set; }
+        public string AssignedTo {  get; set; }
         public DateTime DueDate { get; set; }
     }
 
@@ -39,29 +40,47 @@ namespace TaskManagement.EmployeeMangement.Queries.GetAllTasksOfAnEmployee
         public async Task<List<GetAllTasksOfAnEmployeeResponse>> Handle(GetAllTasksOfAnEmployeeQuery request, CancellationToken cancellationToken)
         {
             var claimsPrincipal = _httpContextAccessor.HttpContext?.User;
-            var employeeId = claimsPrincipal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var employeeId = claimsPrincipal?.FindFirst(ClaimTypes.Name)?.Value;
 
             if (string.IsNullOrEmpty(employeeId))
             {
                 return new List<GetAllTasksOfAnEmployeeResponse>();
             }
 
-            // Fetch tasks assigned to the specific employee
-            var tasks = await _context.EmployeeProjects
-                .Where(ep => ep.EmployeeId == employeeId)  // Filter by employee ID
-                .SelectMany(ep => _context.Tasks  // Access Tasks DbSet
-                    .Where(t => t.ProjectId == ep.ProjectId)  // Filter tasks in the employee's projects
+            // First query: Fetch tasks directly assigned to the employee
+            var directlyAssignedTasks = await _context.Tasks
+                .Where(t => t.AssignedTo == employeeId)
+                .Select(t => new GetAllTasksOfAnEmployeeResponse
+                {
+                    TaskId = t.TaskId,
+                    TaskName = t.TaskName,
+                    TaskDescription = t.TaskDescription,
+                    Status = t.Status.ToString(),
+                    DueDate = t.DueDate,
+                    AssignedTo=t.AssignedTo
+                })
+                .ToListAsync(cancellationToken);
+
+            // Second query: Fetch tasks from projects the employee is working on
+            var projectRelatedTasks = await _context.EmployeeProjects
+                .Where(ep => ep.EmployeeId == employeeId)
+                .SelectMany(ep => _context.Tasks
+                    .Where(t => t.ProjectId == ep.ProjectId)
                     .Select(t => new GetAllTasksOfAnEmployeeResponse
                     {
                         TaskId = t.TaskId,
                         TaskName = t.TaskName,
                         TaskDescription = t.TaskDescription,
                         Status = t.Status.ToString(),
-                        DueDate = t.DueDate
+                        DueDate = t.DueDate,
+                        AssignedTo= t.AssignedTo
                     }))
                 .ToListAsync(cancellationToken);
 
-            return tasks;
+            // Combine the two sets of tasks
+            var allTasks = directlyAssignedTasks.Concat(projectRelatedTasks).ToList();
+
+            return allTasks;
         }
     }
 }

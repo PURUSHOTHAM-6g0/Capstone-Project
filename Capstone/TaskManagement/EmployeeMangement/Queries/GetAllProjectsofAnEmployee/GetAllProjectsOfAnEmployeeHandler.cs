@@ -60,7 +60,8 @@ namespace TaskManagement.EmployeeMangement.Queries.GetAllProjectsofAnEmployee
                         TaskName = t.TaskName,
                         TaskDescription = t.TaskDescription,
                         Status = t.Status.ToString(),
-                        DueDate = t.DueDate
+                        DueDate = t.DueDate,
+                        AssignedTo = t.AssignedTo,
                     }).ToList()
                 })
                 .ToListAsync(cancellationToken); 
